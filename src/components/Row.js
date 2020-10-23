@@ -9,10 +9,12 @@ const base_url = "https://image.tmdb.org/t/p/original/";
 function Row({ title, fetchUrl, isLargeRow }) {
   const [movies, setMovies] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
+
   // A snippet of code which runs based on a specific condition/variable
   useEffect(() => {
     async function fetchData() {
       const request = await axios.get(fetchUrl);
+      console.log("request URL=====>", request);
       // "https://api.themoviedb.org/3",
       //   console.log(request.data.results);
       setMovies(request.data.results);
@@ -39,9 +41,10 @@ function Row({ title, fetchUrl, isLargeRow }) {
       movieTrailer(movie?.name || "")
         .then((url) => {
           /*  https://www.youtube.com/watch?v=ccashdgaygteTSSAG20G
-          extract the last part from the Url, as we need only the trailerUrl Id*/
-          const urlparams = new URLSearchParams(new URL(url).search);
-          setTrailerUrl(urlparams.get("v"));
+          extract the last part from the Url, as we need only the trailerUrl Id
+          */
+          const urlParams = new URLSearchParams(new URL(url).search);
+          setTrailerUrl(urlParams.get("v"));
         })
         .catch((error) => console.log(error));
     }
@@ -55,6 +58,7 @@ function Row({ title, fetchUrl, isLargeRow }) {
         {movies.map((movie) => (
           <img
             key={movie.id}
+            onClick={() => handleClick(movie)}
             className={`row__poster ${isLargeRow && "row__posterLarge"}`}
             src={`${base_url}${
               isLargeRow ? movie.poster_path : movie.backdrop_path
